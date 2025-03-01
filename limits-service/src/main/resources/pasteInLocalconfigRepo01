@@ -1,0 +1,11 @@
+#limits-service-dev.properties
+limits-service.minimum=5
+limits-service.maximum=995
+
+#limits-service-qa.properties
+limits-service.minimum=6
+limits-service.maximum=994
+
+#limits-service.properties
+limits-service.minimum=4
+limits-service.maximum=996
