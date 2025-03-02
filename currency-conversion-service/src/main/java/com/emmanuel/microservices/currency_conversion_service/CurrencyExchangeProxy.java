@@ -6,7 +6,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
 
-@FeignClient(name = "currency-exchange", url = "localhost:8000") //This annotation is used to specify the name of the service to which the request will be made and the URL of the service
+//@FeignClient(name = "currency-exchange", url = "localhost:8000") //This annotation is used to specify the name of the service to which the request will be made and the URL of the service
+@FeignClient(name = "currency-exchange") // Without a specified URL, the Feign client will look for the service in the Eureka server and make a request to an instance of the service implementing load balancing
 public interface CurrencyExchangeProxy {
 
     @GetMapping("/currency-exchange/from/{from}/to/{to}")//This annotation is used to map HTTP GET requests onto specific handler methods
