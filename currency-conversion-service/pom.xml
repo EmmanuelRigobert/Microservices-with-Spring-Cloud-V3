@@ -49,6 +49,24 @@
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 
+		<!-- Micrometer is a metrics collection facade  for metrics, logs and monitoring. Zipkin is a distributed tracing system. With help from micrometer, we can monitor, trace and observe the application in zipkin -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-observation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-tracing-bridge-otel</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.opentelemetry</groupId>
+			<artifactId>opentelemetry-exporter-zipkin</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.github.openfeign</groupId>
+			<artifactId>feign-micrometer</artifactId> <!-- This enables tracing of REST API calls made using Feign - Spring boot V3 only  -->
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
@@ -83,7 +101,32 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<image>
+						<name>sirraven/microv3-${project.artifactId}:${project.version}</name> <!-- This is the name of the docker image that would be created. I used my docker hub username(docker ID which is sirraven) so that the image can be pushed to my docker hub. The project artifactId is the name of the project and the version is the version of the project which would be used to create the repository name and tag respectively -->
+					</image>
+					<pullPolicy>IF_NOT_PRESENT</pullPolicy> <!-- This specifies the pull policy for the image. The default value is ALWAYS. The value IF_NOT_PRESENT means that the image would be pulled only if it is not present on the system -->
+				</configuration>
 			</plugin>
+			<!--
+			 Creating a docker image using Spring Boot Maven Plugin. This is more efficient than the above methods as it creates the jar file and the docker image in one step
+1. Add the below plugin to the pom.xml file
+<plugin>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-maven-plugin</artifactId>
+    <configuration>
+		<image>
+			<name>emmanuel/microservices/${project.artifactId}:${project.version}</name>
+		</image>
+	</configuration>
+</plugin>
+This is commonly found in the pom.xml file of a spring boot application
+2. Open edit configurations in the IDE and add the below command to the goals field. Run the configuration to create the docker image
+spring-boot:build-image
+3. docker image list // to list the docker images on the system
+The repository name would be the name of the project and the tag would be the version of the project
+4. docker container run -d -p 5000:5000 hello-world-java:0.0.1-SNAPSHOT //This runs the docker image in a container in detached mode and maps the port 5000 on the image to the port 5000 on the container in host/local
+			 -->
 		</plugins>
 	</build>
 
